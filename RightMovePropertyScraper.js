@@ -4,9 +4,11 @@ var RightMove = require('rightmove-scraper');
 
 setTimeout(function(){
   db.getAgentAreas.find({type:'postcode'}, function(err, docs){
-    docs.map(function(value, index){
+    docs.slice(0, docs.length).map(function(value, index){
+      console.log(index, value.val)
       RightMove.byOutcode(value.val).map(function(value, i){
-        console.log(index, i, docs.length)
+        console.log(index, i, docs.length, value.identifier, value.updateDate)
+        value.inserted = Date.now();
         db.rightmoveProps.insert(value);
       });
     });
