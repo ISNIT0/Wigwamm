@@ -1,0 +1,131 @@
+<html>
+    <head>
+        <!--Import materialize.css-->
+        <link type="text/css" rel="stylesheet" href="materialize/css/materialize.min.css"  media="screen,projection"/>
+
+        <!--Let browser know website is optimized for mobile-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    </head>
+    <body>
+        <div class="row">
+            <div class="col s12">
+                <ul class="tabs">
+                    <li class="tab col s3"><a href="#">Map</a></li>
+                    <li class="tab col s3"><a href="#">Tube Map</a></li>
+                </ul>
+            </div>
+            <div class="search-large ga-postcode-search">
+                <input style='height:62px;' type="search" id='postcodeArea' placeholder="Search by Postcode or Area" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="ga-postcode-search-inp">
+                <div class="search-results" style='display:none;'>
+                    <ul>
+                        <li class="no-results">Sorry, but no results were found</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class='row' style='padding:5px;'>
+            <h3 class="flow-text">Recent Searches</h4>
+            <ul class="collection">
+                {{#each recent}}
+                <a href='/app/features/{{location}}/{{beds}}' class='black-text'>
+                    <li class="collection-item avatar">
+                        <img src="http://3.l.uk.nestoria.nestimg.com/lis/2/5/d/baf23f81729f1dcdd536cfbd6a50a0d25145b.2.jpg" alt="" class="circle">
+                        <span class="title">{{location}}</span>
+                        <p>{{beds}} bed{{beds-1?'s':''}}</p>
+                        <span class="new badge">4</span>
+                    </li>
+                </a>
+                {{/each}}
+            </ul>
+
+
+
+            <h3 class="flow-text">Favorites</h4>
+            <ul class="collection">
+                {{#each favourites}}
+                <a href='/app/property/{{guid}}' class='black-text'>
+                    <li class="collection-item avatar" data-propId='{{guid}}'>
+                        <img src="{{image}}" alt="" class="circle">
+                        <span class="title">{{name}}</span>
+                        <p><i class="mdi-action-delete right"></i></p>
+                    </li>
+                </a>
+                {{/each}}
+            </ul>
+        </div>
+        <script src='jquery.js'></script>
+        <script type="text/javascript" src="materialize/js/materialize.min.js"></script>
+
+        <style>
+            .ga-postcode-search {
+                position:relative;
+            }
+            .search-results {
+                max-height:300px;
+                overflow-y:scroll;
+                box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.15);
+                border-bottom: 1px solid #EAEAEA;
+                border-top: 0;
+                background: white;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                z-index: 9995;
+                width: 100%;
+            }
+            .search-results li {
+                border-bottom: 1px solid #E2E2E2;
+                cursor: pointer;
+                padding-left: 2rem;
+                height: 62px;
+                font-size: 16px;
+                line-height: 62px;
+                text-align: left;
+            }
+        </style>
+
+        <script>
+            var debounce = function(func, wait, immediate) {
+                var timeout;
+                return function() {
+                    var context = this, args = arguments;
+                    var later = function() {
+                        timeout = null;
+                        if (!immediate) func.apply(context, args);
+                    };
+                    var callNow = immediate && !timeout;
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                    if (callNow) func.apply(context, args);
+                };
+            };
+
+
+            $('.mdi-action-delete').on('click', function(e){
+                e.stopPropagation();
+                e.preventDefault();
+                $.post('/app/unSave',{
+                    guid:$(e.target).closest('.collection-item').attr('data-propId'),
+                    userId:localStorage.userId
+                });
+                $(e.target).closest('.collection-item').parent().fadeOut();
+            });
+            $('.postcode-search').on('blur', function(){
+                $('.search-results').hide();
+            })
+            $('#postcodeArea').on('focus', function(){
+                $('.search-results').show();
+            }).on('keyup', debounce(function(e){
+                $.getJSON('http://localhost:8080/app/autoComplete/'+e.target.value, function(data){
+                    $('.search-results ul').html('').append(
+                        data.map(function(val){
+                            return $('<li>').append(
+                                $('<a>').attr('href', '/app/location/'+val.val).addClass('col s12').text(val.val).prepend($('<i>').addClass('mdi-maps-map'))
+                            );
+                        })
+                    );
+                });
+            }, 300));
+        </script>
+    </body>
+</html>

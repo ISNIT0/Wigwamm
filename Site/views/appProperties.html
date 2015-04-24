@@ -1,0 +1,90 @@
+<html>
+    <head>
+        <!--Import materialize.css-->
+        <link type="text/css" rel="stylesheet" href="/materialize/css/materialize.min.css"  media="screen,projection"/>
+
+        <!--Let browser know website is optimized for mobile-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    </head>
+    <body>
+        <nav class="top-nav">
+            <div class="container">
+                <div class="nav-wrapper"><a class="page-title">{{beds}} beds in {{location}}</a></div>
+            </div>
+        </nav>
+        <div class="row">
+            <div class="col s12">
+                <ul class="tabs">
+                    <li class="tab col s3"><a href="#list">List</a></li>
+                    <li class="tab col s3"><a class='active' href="#photos">Photos</a></li>
+                    <li class="tab col s3"><a href="#map">Map</a></li>
+                </ul>
+            </div>
+            <div id="list" class="col s12">List View Goes Here</div>
+            <div id="photos" class="col s12">
+                {{#if properties.length}}
+                {{#each properties}}
+                <div class="col s6 m3">
+                    <div class="card black-text" data-propId='{{guid}}'>
+                        <a href='/app/property/{{guid}}'>
+                            <div class="card-image">
+                                <img src="{{img_url}}">
+                                <span class="card-title trucate" style='font-size:1em;padding:5px;'>{{title.split(',')[0]}}</span>
+                            </div>
+                        </a>
+                        <div class="card-action">
+                            <i class="mdi-content-clear left waves-effect waves-red" style='margin:0;width:40%;text-align:center;'></i>
+                            <i class="mdi-content-archive right waves-effect waves-teal {{saved?'saved':''}}" style='margin:0;width:40%;text-align:center;'></i>
+                        </div>
+                    </div>
+                </div>
+                {{/each}}
+
+                {{else}}
+                <h3 class='flow-text'>There don't seem to be any properties that match your query at the moment.</h3>
+                {{/if}}
+            </div>
+            <div id="map" class="col s12">Map View Goes Here</div>
+        </div>
+
+        <script src='/jquery.js'></script>
+        <script type="text/javascript" src="/materialize/js/materialize.min.js"></script>
+    </body>
+    <script>
+        $('.mdi-content-clear').on('click', function(e){
+            $.post('/app/removeProp',{
+                guid:$(e.target).closest('.card').attr('data-propId'),
+                userId:localStorage.userId
+            });
+            $(e.target).closest('.card').parent().fadeOut();
+        });
+        $('.mdi-content-archive').on('click', function(e){
+            e.stopPropagation();
+            e.preventDefault();
+            if($(e.target).is('.saved')){
+                $.post('/app/unSave',{
+                    guid:$(e.target).closest('.card').attr('data-propId'),
+                    userId:localStorage.userId
+                });
+                $(e.target).closest('.mdi-content-archive').removeClass('saved');
+            } else {
+                $(e.target).closest('.mdi-content-archive:not(.saved)').addClass('saved');
+                $.post('/app/saveProp',{
+                    guid:$(e.target).closest('.card').attr('data-propId'),
+                    userId:localStorage.userId,
+                    name:$(e.target).closest('.card').find('.card-title').text(),
+                    image:$(e.target).closest('.card').find('img').attr('src')
+                });
+            }
+        });
+    </script>
+
+    <style>
+        .saved {
+            color:#ffac33;
+        }
+        .card-action {
+            padding:5px!important;
+        }
+    </style>
+</html>
