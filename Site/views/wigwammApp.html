@@ -116,7 +116,7 @@
             $('#postcodeArea').on('focus', function(){
                 $('.search-results').show();
             }).on('keyup', debounce(function(e){
-                $.getJSON('http://localhost:8080/app/autoComplete/'+e.target.value, function(data){
+                $.getJSON('/app/autoComplete/'+e.target.value, function(data){
                     $('.search-results ul').html('').append(
                         data.map(function(val){
                             return $('<li>').append(

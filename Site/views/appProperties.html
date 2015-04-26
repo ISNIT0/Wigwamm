@@ -12,7 +12,7 @@
                 <div class="nav-wrapper"><a class="page-title">{{beds}} beds in {{location}}</a></div>
             </div>
         </nav>
-        <div class="row">
+        <div class="row" style='margin:0;'>
             <div class="col s12">
                 <ul class="tabs">
                     <li class="tab col s3"><a href="#list">List</a></li>
@@ -21,23 +21,22 @@
                 </ul>
             </div>
             <div id="list" class="col s12">List View Goes Here</div>
-            <div id="photos" class="col s12">
+            <div id="photos" class="col s12" style='padding:0;'>
                 {{#if properties.length}}
                 {{#each properties}}
-                <div class="col s6 m3">
-                    <div class="card black-text" data-propId='{{guid}}'>
-                        <a href='/app/property/{{guid}}'>
-                            <div class="card-image">
-                                <img src="{{img_url}}">
-                                <span class="card-title trucate" style='font-size:1em;padding:5px;'>{{title.split(',')[0]}}</span>
-                            </div>
-                        </a>
-                        <div class="card-action">
-                            <i class="mdi-content-clear left waves-effect waves-red" style='margin:0;width:40%;text-align:center;'></i>
-                            <i class="mdi-content-archive right waves-effect waves-teal {{saved?'saved':''}}" style='margin:0;width:40%;text-align:center;'></i>
+                <a href='/app/property/{{guid}}' class='col s12 m6 l3' style='padding:0;margin:0;'>
+                    <div class='property' style='width:100%;position:relative;' data-propId='{{guid}}'>
+                        <img src='{{img_url}}' style='width:100%;'/>
+                        <div class='white-text' style='position:absolute;bottom:0;padding-left:10px;padding-bottom:10px;max-width:80%;'>
+                            <span class='title flow-text truncate' style='font-size:1.5em;background: rgba(0,0,0,0.3);'>{{title.split(',')[0]}}</span><br />
+                            <span class='price flow-text truncate' style='font-weight:bold;background: rgba(0,0,0,0.3);'>{{price_formatted}}</span>
+                        </div>
+                        <div class='white-text buttons' style='position:absolute;bottom:0;padding-right:10px;padding-bottom:10px;right:0;font-size:2.5em;'>
+                            <i class='mdi-content-clear'></i>
+                            <i class='mdi-social-mood {{saved?'saved':''}}'></i>
                         </div>
                     </div>
-                </div>
+                </a>
                 {{/each}}
 
                 {{else}}
@@ -53,27 +52,30 @@
     <script>
         $('.mdi-content-clear').on('click', function(e){
             $.post('/app/removeProp',{
-                guid:$(e.target).closest('.card').attr('data-propId'),
+                guid:$(e.target).closest('.property').attr('data-propId'),
                 userId:localStorage.userId
             });
-            $(e.target).closest('.card').parent().fadeOut();
+            $(e.target).closest('.property').animate({
+                height:'toggle',
+                opacity:'toggle'
+            }, 300);
         });
-        $('.mdi-content-archive').on('click', function(e){
+        $('.mdi-social-mood').on('click', function(e){
             e.stopPropagation();
             e.preventDefault();
             if($(e.target).is('.saved')){
                 $.post('/app/unSave',{
-                    guid:$(e.target).closest('.card').attr('data-propId'),
+                    guid:$(e.target).closest('.property').attr('data-propId'),
                     userId:localStorage.userId
                 });
-                $(e.target).closest('.mdi-content-archive').removeClass('saved');
+                $(e.target).closest('.mdi-social-mood').removeClass('saved');
             } else {
-                $(e.target).closest('.mdi-content-archive:not(.saved)').addClass('saved');
+                $(e.target).closest('.mdi-social-mood:not(.saved)').addClass('saved');
                 $.post('/app/saveProp',{
-                    guid:$(e.target).closest('.card').attr('data-propId'),
+                    guid:$(e.target).closest('.property').attr('data-propId'),
                     userId:localStorage.userId,
-                    name:$(e.target).closest('.card').find('.card-title').text(),
-                    image:$(e.target).closest('.card').find('img').attr('src')
+                    name:$(e.target).closest('.property').find('.title').text(),
+                    image:$(e.target).closest('.property').find('img').eq(0).attr('src')
                 });
             }
         });
@@ -81,10 +83,10 @@
 
     <style>
         .saved {
-            color:#ffac33;
+            color:#F7E634;
         }
-        .card-action {
-            padding:5px!important;
+        .mdi-social-mood, .mdi-content-clear {
+            cursor:pointer;
         }
     </style>
 </html>
