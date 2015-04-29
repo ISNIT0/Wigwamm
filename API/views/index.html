@@ -1,0 +1,263 @@
+<html>
+
+<head>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <script src='/jquery.js'></script>
+</head>
+
+<body>
+
+  <div class='topButtons'>
+    <button style='border-right:1px solid #FF7A4D;'>
+      <img src='https://runlittlejo.files.wordpress.com/2015/04/white-map-pin.png' /> Map</button>
+    <button style='border-left:1px solid #FF7A4D;'>
+      <img style='height:60%;' src='/tubeWhite.svg' /> Tube</button>
+  </div>
+  <div class='search'>
+    <input class='locationSearch' type='text' placeholder='Postcode / Area' />
+    <ul class='results'>
+      <li class='result'>Start Finding...</li>
+    </ul>
+  </div>
+  <div class='section prevSearches'>
+    <span class='sectTitle'>Previous Seraches</span>
+
+    {{#each prevSearches}}
+      <div class='card'>
+        <span class='title'>{{location}}</span>
+        <span class='subTitle'>£{{numeral(price.min).format('0 a')}} - £{{numeral(price.max).format('0 a')}}</span>
+        <a href='#' class='badge'>Share</a>
+        <br />
+        <a href='#' style='float:right;'>Remove search</a>
+        <br />
+        <br />
+        {{#each features}}
+          <div class='card sub-card'>
+            <span class='title'>{{label}}</span>
+            <span class='badge new'>{{new}} new</span>
+            <span class='subTitle' style='float:right;padding-top:5px;'>{{favourites}} favourites</span>
+            <br />
+          </div>
+          <br />
+        {{/each}}
+      </div>
+    {{/each}}
+
+    <div class='card'>
+      <span class='title'>Palmers Green</span>
+      <span class='subTitle'>£51 - £440</span>
+      <a href='#' class='badge'>Share</a>
+      <br />
+      <a href='#' style='float:right;'>Remove search</a>
+      <br />
+      <br />
+        <div class='card sub-card'>
+          <span class='title'>Outside space</span>
+          <span class='badge new'>12 new</span>
+          <span class='subTitle' style='float:right;padding-top:5px;'>2 favourites</span>
+          <br />
+        </div>
+        <br />
+        <div class='card sub-card'>
+          <span class='title'>Needs Work</span>
+          <span class='badge new'>8 new</span>
+          <span class='subTitle' style='float:right;padding-top:5px;'>3 favourites</span>
+          <br />
+        </div>
+        <br />
+    </div>
+  </div>
+
+
+  <div class='section favourites'>
+    <span class='sectTitle'>Found</span>
+
+    {{#each found}}
+      <div class='card'>
+        <a href='/app/property/{{listing_id}}' style='color:black;'>
+          <span class='title'>{{displayable_address}}</span>
+          <span class='subTitle'> £{{numeral(price).format('0 a')}}</span>
+          <a href='#' class='badge new'>{{new}}</a>
+          <br />
+        </a>
+      </div>
+      <br />
+    {{/each}}
+  </div>
+
+  <script>
+    $('.back').on('click', function() {
+      window.history.back();
+    });
+
+    $('.search').on('blur', function() {
+      $('.results').removeClass('active');
+    });
+    $('.locationSearch').on('focus', function() {
+      $('.results').addClass('active');
+    }).on('keyup', function(e) {
+      $.getJSON('/autoComplete/' + e.target.value, function(res) {
+        console.log(res)
+        $('.results').html('').append(
+          res.map(function(val) {
+            return $('<li>').addClass('result').append($('<a>').attr('href', '/app/priceRange/' + val.outcode).text(val.outcode + ': ' + val.description.match(/\[(.*?)\]/g).map(function(val) {
+              return val.replace('[', '').replace(']', '')
+            }).join(', ')));
+          })
+        );
+      });
+    });
+  </script>
+
+  <style>
+    .search {
+      position: relative;
+    }
+
+    .results {
+      width: 100%;
+      margin-top: 0;
+      display: none;
+      max-height: 300px;
+      height: auto;
+      background: #fff;
+      overflow: scroll;
+      list-style-type: none;
+      position: absolute;
+      top: 100%;
+      z-index: 99999;
+    }
+
+    .results .result {
+      padding: 10px;
+      border-bottom: 2px solid #CCD2DD;
+    }
+
+    .result a {
+      padding-left: 10px;
+      color: #FF5A00;
+      font-size: 1em;
+      text-decoration: none;
+    }
+
+    .results.active {
+      display: block;
+    }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: #FF5A00;
+      height: 100%;
+      width: 100%;
+      margin: 0;
+    }
+
+    .topButtons {
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 70px;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .topButtons button {
+      font-family: 'Open Sans', sans-serif;
+      padding: 0;
+      margin: 0;
+      display: inline;
+      background: none;
+      background: #FF5A00;
+      color: white;
+      font-weight: bold;
+      font-size: 1.5em;
+      width: 50%;
+      height: 100%;
+      border: none;
+      flex: 1 1 auto;
+    }
+
+    .topButtons button img {
+      height: 40%;
+      margin-bottom: -6px;
+    }
+
+    .locationSearch {
+      padding: 20px;
+      border: none;
+      width: 100%;
+      height: 70px;
+      background: #E0E3E9;
+      border-top: 5px solid #ADB4BE;
+      font-size: 1.5em;
+    }
+
+    .section {
+      padding: 20px;
+    }
+
+    .sectTitle {
+      display: block;
+      text-transform: uppercase;
+      font-size: 1em;
+      color: #FFA080;
+      margin-bottom: 10px;
+    }
+
+    .card {
+      position: relative;
+      padding: 10px;
+      height: auto;
+      background: white;
+      font-family: 'Open Sans', sans-serif;
+    }
+
+    .card .title {
+      display: block;
+      font-weight: bold;
+      font-size: 1.5em;
+    }
+
+    .card .badge {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      background: #FF5A00;
+      color: white;
+      border-radius: 15%;
+      padding: 5px;
+      padding-left: 10px;
+      padding-right: 10px;
+      font-weight: bold;
+    }
+
+    .card .badge.new {
+      background: white;
+      color: #07E444;
+    }
+
+    .sub-card {
+      background: #FFDDCA;
+      height: auto;
+      padding-top: 15px;
+      padding-bottom: 15px;
+    }
+
+    .sub-card .title {
+      font-size: 1.3em;
+    }
+
+    .sub-card .subTitle {
+      color: #8F8380;
+    }
+
+    .card a {
+      font-family: 'Open Sans', sans-serif;
+      color: #FF5A00;
+      text-decoration: none;
+    }
+  </style>
+</body>
+
+</html>

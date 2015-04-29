@@ -1,5 +1,5 @@
 var RightMove = require('rightmove-scraper');
-var db = require('mongojs').connect('test',['test']);
+var db = require('mongojs').connect('test',['rightmoveCodes']);
 
 
 var run = function(i){

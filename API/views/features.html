@@ -1,0 +1,172 @@
+<html>
+
+<head>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <script src='/jquery.js'></script>
+</head>
+
+<body>
+
+  <div class='topBar'>
+    <span class='back'><img style='height:60%;' src='/backWhite.svg' stroke='white' /></span>
+    <span class='title'>{{outcode}}</span>
+  </div>
+  <div class='section ranges'>
+    <span class='sectTitle'>Features</span>
+
+    {{#each features}}
+    <a href='/app/properties/{{outcode}}/{{price.min}}/{{price.max}}/{{id}}'>
+      <div class='card'>
+        <span class='title'>{{label}}</span>
+        <a href='#' class='badge new'>{{new}}</a>
+      </div>
+    </a>
+    {{/each}}
+  </div>
+
+
+  <script>$('.back').on('click', function(){window.history.back();});</script>
+  <style>
+  .topBar path {
+    fill:white;
+  }
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: #FF5A00;
+      height: 100%;
+      width: 100%;
+      margin: 0;
+    }
+
+    .topBar {
+      text-align: center;
+      position: relative;
+      color: white;
+      font-weight: bold;
+      font-size: 2em;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 70px;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .topBar .title {
+      margin-left: auto;
+      margin-right: auto;
+      width: 6em;
+    }
+
+    .topBar .back {
+      position: absolute;
+      left: 10px;
+    }
+
+    .topBar button {
+      font-family: 'Open Sans', sans-serif;
+      padding: 0;
+      margin: 0;
+      display: inline;
+      background: none;
+      background: #FF5A00;
+      color: white;
+      font-weight: bold;
+      font-size: 1.5em;
+      width: 50%;
+      height: 100%;
+      border: none;
+      flex: 1 1 auto;
+    }
+
+    .topBar button img {
+      height: 40%;
+      margin-bottom: -6px;
+    }
+
+    .locationSearch {
+      padding: 20px;
+      border: none;
+      width: 100%;
+      height: 70px;
+      background: #E0E3E9;
+      border-top: 5px solid #ADB4BE;
+      font-size: 1.5em;
+    }
+
+    .section {
+      padding: 20px;
+    }
+
+    .sectTitle {
+      display: block;
+      text-transform: uppercase;
+      font-size: 1em;
+      color: #FFA080;
+      margin-bottom: 10px;
+    }
+
+    .card {
+      color:black;
+      position: relative;
+      padding: 10px;
+      height: auto;
+      background: white;
+      font-family: 'Open Sans', sans-serif;
+    }
+
+    .card .title {
+      display: block;
+      font-weight: bold;
+      font-size: 1.5em;
+    }
+
+    .card .badge {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      background: #FF5A00;
+      color: white;
+      border-radius: 15%;
+      padding: 5px;
+      padding-left: 10px;
+      padding-right: 10px;
+      font-weight: bold;
+    }
+
+    .card .badge.new {
+      background: white;
+      color: #07E444;
+    }
+
+    .sub-card {
+      background: #FFDDCA;
+      height: auto;
+      padding-top: 15px;
+      padding-bottom: 15px;
+    }
+
+    .sub-card .title {
+      font-size: 1.3em;
+    }
+
+    .sub-card .subTitle {
+      color: #8F8380;
+    }
+
+    .card a {
+      font-family: 'Open Sans', sans-serif;
+      color: black;
+      text-decoration: none;
+    }
+
+    .card .link {
+      font-family: 'Open Sans', sans-serif;
+      color: #FF5A00;
+      text-decoration: none;
+    }
+  </style>
+</body>
+
+</html>

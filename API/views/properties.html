@@ -1,0 +1,238 @@
+<html>
+
+<head>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <script src='/jquery.js'></script>
+</head>
+
+<body>
+
+  <div class='topBar'>
+    <span class='back'><img style='height:60%;' src='/back.svg' /></span>
+    <span class='title'>£{{numeral(price.min).format('0 a')}} - £{{numeral(price.max).format('0 a')}} in {{outcode}}</span>
+  </div>
+  <div class='section properties'>
+
+    {{#each properties}}
+    <div class='card' data-id='{{listing_id}}'>
+      <a href='/app/property/{{listing_id}}'>
+        <img src='{{image_url}}' />
+      </a>
+      <div class='buttons {{found?'active':''}}'>
+        <button style='border-right:1px solid #CBD1DC;' class='find'><img style='height:60%;' src='/thumbUp.svg' />Find</button>
+        <button style='border-left:1px solid #CBD1DC;' class='forget'><img style='height:60%;' src='/thumbDown.svg' />Forget</button>
+        <button class='hidden' style='background:white;'>Book Viewing</button>
+      </div>
+    </div>
+    <br />
+    {{/each}}
+  </div>￼
+
+  <script>
+  $('.back').on('click', function(){window.history.back();});
+    $('.forget').on('click', function(e) {
+      $.post('/markForget/'+$(e.target).closest('.card').attr('data-id'))
+      $(e.target).closest('.card').animate({
+        height: 'toggle',
+        opacity: 'toggle'
+      }, 500);
+    });
+    $('.find').on('click', function(e) {
+      $.post('/markFound/'+$(e.target).closest('.card').attr('data-id'))
+    });
+    $('.buttons button:not(.hidden,.forget)').click(function(e) {
+      $(e.target).closest('.buttons').addClass('active');
+    });
+  </script>
+
+  <style>
+    .properties {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      margin-right: -1%;
+    }
+
+    .card img {
+      width: 100%;
+    }
+
+    .properties .card {
+      width: 48%;
+      margin-left: 4px;
+      padding: 0;
+      flex: 1 1 auto;
+      margin-bottom: 10px;
+    }
+
+    .properties .card .buttons {
+      background: none;
+      display: flex;
+      height: 40px;
+    }
+
+    .card .buttons button {
+      width: 100%;
+      flex: 1 1 auto;
+      background: none;
+      border: none;
+      background: #E0E3E9;
+      text-decoration: none;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .buttons.active button {
+      display: none;
+    }
+
+    .buttons.active .hidden {
+      display: block;
+    }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: #CBD1DC;
+      height: 100%;
+      width: 100%;
+      margin: 0;
+    }
+
+    .topBar {
+      background: #E0E3E9;
+      text-align: center;
+      position: relative;
+      color: black;
+      font-weight: bold;
+      font-size: 2em;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 55px;
+      padding-top:15px;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .topBar .title {
+      margin-left: 10%;
+      width: 90%;
+      font-size: 0.8em;
+    }
+
+    .topBar .back {
+      position: absolute;
+      left: 10px;
+    }
+
+    .topBar button {
+      font-family: 'Open Sans', sans-serif;
+      padding: 0;
+      margin: 0;
+      display: inline;
+      background: none;
+      background: #FF5A00;
+      color: white;
+      font-weight: bold;
+      font-size: 1.5em;
+      width: 50%;
+      height: 100%;
+      border: none;
+      flex: 1 1 auto;
+    }
+
+    .topBar button img {
+      height: 40%;
+      margin-bottom: -6px;
+    }
+
+    .locationSearch {
+      padding: 20px;
+      border: none;
+      width: 100%;
+      height: 70px;
+      background: #E0E3E9;
+      border-top: 5px solid #ADB4BE;
+      font-size: 1.5em;
+    }
+
+    .section {
+      padding-top: 20px;
+      padding: 10px;
+      padding-left: 6px;
+    }
+
+    .sectTitle {
+      display: block;
+      text-transform: uppercase;
+      font-size: 1em;
+      color: #FFA080;
+      margin-bottom: 10px;
+    }
+
+    .card {
+      color: black;
+      position: relative;
+      padding: 10px;
+      height: auto;
+      background: white;
+      font-family: 'Open Sans', sans-serif;
+    }
+
+    .card .title {
+      display: block;
+      font-weight: bold;
+      font-size: 1.5em;
+    }
+
+    .card .badge {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      background: #FF5A00;
+      color: white;
+      border-radius: 15%;
+      padding: 5px;
+      padding-left: 10px;
+      padding-right: 10px;
+      font-weight: bold;
+    }
+
+    .card .badge.new {
+      background: white;
+      color: #07E444;
+    }
+
+    .sub-card {
+      background: #FFDDCA;
+      height: auto;
+      padding-top: 15px;
+      padding-bottom: 15px;
+    }
+
+    .sub-card .title {
+      font-size: 1.3em;
+    }
+
+    .sub-card .subTitle {
+      color: #8F8380;
+    }
+
+    .card a {
+      font-family: 'Open Sans', sans-serif;
+      color: black;
+      text-decoration: none;
+    }
+
+    .card .link {
+      font-family: 'Open Sans', sans-serif;
+      color: #FF5A00;
+      text-decoration: none;
+    }
+  </style>
+</body>
+
+</html>

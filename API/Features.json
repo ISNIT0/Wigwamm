@@ -1,0 +1,66 @@
+[{
+  "label": "Outside Space",
+  "id": "outsideSpace",
+  "query": {}
+}, {
+  "label": "Parking",
+  "id": "parking",
+  "query": {}
+}, {
+  "label": "More Space",
+  "id": "moreSpace",
+  "query": {}
+}, {
+  "label": "Needs Work",
+  "id": "needsWork",
+  "query": {
+    "description": {
+      "$or": [{
+        "$in": {
+          "$regex": ".*in need of.*",
+          "$options": "i"
+        }
+      },{
+        "$in": {
+          "$regex": ".*needs.*",
+          "$options": "i"
+        }
+      }]
+    }
+  }
+}, {
+  "label": "Period Construction",
+  "id": "periodConstruction",
+  "query": {
+    "description": {
+      "$or": [{
+        "$in": {
+          "$regex": ".*period.*",
+          "$options": "i"
+        }
+      },{
+        "$in": {
+          "$regex": ".*victorian.*",
+          "$options": "i"
+        }
+      },{
+        "$in": {
+          "$regex": ".*conversion.*",
+          "$options": "i"
+        }
+      }]
+    }
+  }
+}, {
+  "label": "Bargin",
+  "id": "bargin",
+  "query": {}
+}, {
+  "label": "Swimming Pool",
+  "id": "swimmingPool",
+  "query": {}
+}, {
+  "label": "New Build",
+  "id": "newBuild",
+  "query": {}
+}]
