@@ -1,13 +1,13 @@
 var db = require('mongojs').connect('test', ['priceBands', 'landReg']);
 var async = require('async');
 
-/*module.exports = function(outcode, callBack){
+module.exports = function(outcode, callBack){
   db.priceBands.find({outcode:outcode}, function(err, value){
     callBack(err, value);
   });
-};*/
+};
 
-module.exports = function(outcode, callBack) {
+/*module.exports = function(outcode, callBack) {
   db.landReg.find({
     outcode: {
       $regex: ".*" + outcode + ".*",
@@ -46,7 +46,7 @@ module.exports = function(outcode, callBack) {
       callBack(null, []);
     }
   });
-}
+}*/
 
 
 

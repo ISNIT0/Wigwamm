@@ -1,15 +1,14 @@
 var app = require('express')();
 var db = require('mongojs').connect('test', ['userRemoved', 'userSaved', 'prevSearches', 'plentificAreas']);
-var rmRecent = require('../RightMoveRecentUpdates.js');
 var Cookies = require('cookies');
 var Properties = require('./Properties.js');
 var Property = require('./Property.js');
-var PriceBands = require('../PriceBands.js');
+var PriceBands = require('./PriceBands.js');
 var Features = require('./Features.json');
+var Found = require('./Found.js');
 var Load = require('ractive-load');
 var moment = require('moment');
 var numeral = require('numeral');
-var Found = require('./Found.js');
 
 app.use(require('express').static(process.cwd() + '/public'));
 app.use(require('body-parser').json());
